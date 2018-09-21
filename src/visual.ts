@@ -86,7 +86,7 @@ module powerbi.extensibility.visual {
         private BarHeight: number = 0;
 
         public settings: VisualSettings;
-        private host: IVisualHost;
+        public host: IVisualHost;
         private dataView: DataView;
         private data: VisualData;
         public visualSize: ISize;
@@ -112,6 +112,7 @@ module powerbi.extensibility.visual {
 
         private hasHighlight: boolean;
         private isLegendNeeded: boolean;
+        private isSelectionRestored: boolean = false;
 
         private metadata: VisualMeasureMetadata;
 
@@ -120,6 +121,9 @@ module powerbi.extensibility.visual {
         private visualTranslation: VisualTranslation;
 
         private dataPointsByCategories: CategoryDataPoints[];
+
+        public skipUpdate: boolean = false;
+        public skipScrollbarUpdate: boolean = false;
 
         constructor(options: VisualConstructorOptions) {
             // Create d3 selection from main HTML element
@@ -184,6 +188,11 @@ module powerbi.extensibility.visual {
         public update(options: VisualUpdateOptions) {
             const dataView = options && options.dataViews && options.dataViews[0];
 
+            if (this.skipUpdate) {
+                this.skipUpdate = false;
+                return;
+            }
+
             if (!dataView || options.type === VisualUpdateType.ResizeEnd) {
                 return;
             }
@@ -242,7 +251,11 @@ module powerbi.extensibility.visual {
             // Scrollbar
             let scrollBarState: ScrollbarState = this.getScrollbarState();
 
-            this.scrollBar.updateData(scrollBarState, options.type);
+
+            this.scrollBar.updateData(scrollBarState, options.type, this.skipScrollbarUpdate);
+
+            this.skipScrollbarUpdate = false;
+                     
 
             let visibleDataPoints: VisualDataPoint[] = this.scrollBar.getVisibleDataPoints();
 
@@ -284,8 +297,23 @@ module powerbi.extensibility.visual {
 
             this.scrollBar.update();
 
-            let bars = this.visualSvgGroup.selectAll(Selectors.BarSelect.selectorName).data(visibleDataPoints);
-            this.lassoSelection.update(bars);
+            let bars = this.visualSvgGroup.selectAll(Selectors.BarSelect.selectorName).data(visibleDataPoints);      
+            this.lassoSelection.update(bars);      
+
+            if (!this.isSelectionRestored) {
+                let newDataPoints = this.allDataPoints.filter(d => {
+                    return this.settings.selectionSaveSettings.selection.some(item => {
+                        return (<any>item).identity.key === (<any>d).identity.key;
+                    });
+                });
+
+                if (newDataPoints.length) {
+                    this.webBehaviorSelectionHandler.handleSelection(newDataPoints, false);
+                    this.interactivityService.restoreSelection(newDataPoints.map(d => d.identity as powerbi.visuals.ISelectionId));
+                }
+                
+                this.isSelectionRestored = true;                
+            }
         }
 
         getSettings(): VisualSettings {
@@ -301,7 +329,7 @@ module powerbi.extensibility.visual {
         }
 
         public getChartBoundaries(): ClientRect {
-            return (<Element>this.xAxisSvgGroup.node()).getBoundingClientRect();
+            return (<Element>this.clearCatcher.node()).getBoundingClientRect();
         }
 
         getVisualTranslation(): VisualTranslation {
@@ -462,8 +490,10 @@ module powerbi.extensibility.visual {
                 this.interactivityService,
                 this.behavior,
                 this.tooltipServiceWrapper,
-                this.hasHighlight
-            );
+                this.host,
+                this.hasHighlight,
+                this.settings
+            );            
 
             let chartWidth: number = (<Element>this.xAxisSvgGroup.node()).getBoundingClientRect().width -
                                         (<Element>this.xAxisSvgGroup.selectAll("text")[0][0]).getBoundingClientRect().width;
@@ -564,6 +594,10 @@ module powerbi.extensibility.visual {
             }
             if (!yAxis.showTitle) {
                 yAxis.axisTitle = '';
+            }
+
+            if (typeof settings.selectionSaveSettings.selection === "string") {
+                settings.selectionSaveSettings.selection = JSON.parse(settings.selectionSaveSettings.selection);
             }
         }
 

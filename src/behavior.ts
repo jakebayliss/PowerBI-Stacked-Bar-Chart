@@ -38,14 +38,14 @@ module powerbi.extensibility.visual {
         bars: Selection<any>;
         clearCatcher: Selection<any>;
         interactivityService: IInteractivityService;
+        selectionSaveSettings?: any;
+        host: IVisualHost;
     }
 
     export class WebBehavior implements IInteractiveBehavior {
-        private bars: Selection<any>;
-        private clearCatcher: Selection<any>;
-        private interactivityService: IInteractivityService;
         private visual: Visual;
         private options: WebBehaviorOptions;
+        public selectionHandler: ISelectionHandler;
 
         constructor(visual: Visual) {
             this.visual = visual;
@@ -57,7 +57,13 @@ module powerbi.extensibility.visual {
         }
 
         public renderSelection(hasSelection: boolean) {
+            
             let hasHighlight = this.visual.getAllDataPoints().filter(x => x.highlight).length > 0;
+
+            let allDatapoints: VisualDataPoint[] = this.visual.getAllDataPoints();
+            this.options.interactivityService.applySelectionStateToData(allDatapoints);
+            let currentSelection = allDatapoints.filter(d => d.selected);
+
             this.options.bars.style({
                 "fill-opacity": (p: VisualDataPoint) => visualUtils.getFillOpacity(
                         p.selected,
@@ -85,6 +91,12 @@ module powerbi.extensibility.visual {
                     return Visual.DefaultStrokeWidth;
                 }
             });
+
+            if ((hasSelection || currentSelection.length === 0) && !visualUtils.compareObjects(currentSelection, this.options.selectionSaveSettings, "identity.key")) {
+
+                this.visual.skipScrollbarUpdate = true;
+                selectionSaveUtils.saveSelection(currentSelection, this.options.host);
+            }
         }
     }
 }
