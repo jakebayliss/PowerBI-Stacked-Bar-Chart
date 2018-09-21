@@ -30,7 +30,9 @@ module powerbi.extensibility.visual {
             visualInteractivityService: IInteractivityService,
             visualBehavior: IInteractiveBehavior,
             tooltipServiceWrapper: ITooltipServiceWrapper,
-            hasHighlight: boolean) {
+            host: IVisualHost,
+            hasHighlight: boolean,
+            settings: VisualSettings) {
             // Select all bar groups in our chart and bind them to our categories.
             // Each group will contain a set of bars, one for each of the values in category.
             const barGroupSelect = visualSvgGroup.selectAll(Selectors.BarGroupSelect.selectorName)
@@ -119,6 +121,8 @@ module powerbi.extensibility.visual {
                     bars: barSelect,
                     clearCatcher: clearCatcher,
                     interactivityService: visualInteractivityService,
+                    host: host,
+                    selectionSaveSettings: settings.selectionSaveSettings
                 };
 
                 interactivityService.bind(data.dataPoints, visualBehavior, behaviorOptions);
