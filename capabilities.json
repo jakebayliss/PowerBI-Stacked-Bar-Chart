@@ -24,9 +24,9 @@
             ]
         },
         {
-            "displayName": "Color saturation",
-            "name": "Gradient",
-            "kind": "Measure",            
+            "displayName": "Score",
+            "name": "Score",
+            "kind": "Measure",
             "requiredTypes": [
                 {
                     "numeric": true
@@ -35,11 +35,6 @@
                     "integer": true
                 }
             ]
-        },
-        {
-            "displayName": "Column By",
-            "name": "ColumnBy",
-            "kind": "Grouping"
         },
         {
             "displayName": "Row By",
@@ -53,19 +48,6 @@
         }
     ],
     "objects": {
-        "selectionSaveSettings": {
-            "displayName": "Selection save settigns",
-            "displayNameKey": "Visual_SelectionSaveSettings",
-            "properties": {
-                "selection": {
-                    "displayName": "Selection",
-                    "displayNameKey": "Visual_SelectionSaveSettings_Selection",
-                    "type": {
-                        "text": true
-                    }
-                }
-            }
-        },
         "smallMultiple": {
             "displayName": "Small Multiple",
             "properties": {
@@ -1545,172 +1527,6 @@
                     }
                 }
             }
-        },
-        "constantLine": {
-            "displayName": "Constant line",
-            "properties": {
-                "show": {
-                    "displayName": "Show",
-                    "type": {
-                        "bool": true
-                    }
-                },
-                "name": {
-                    "displayName": "Name",
-                    "type": {
-                        "text": true
-                    }
-                },
-                "value": {
-                    "displayName": "Value",
-                    "type": {
-                        "numeric": true
-                    }
-                },
-                "lineColor": {
-                    "displayName": "Color",
-                    "type": {
-                        "fill": {
-                            "solid": {
-                                "color": true
-                            }
-                        }
-                    }
-                },
-                "transparency": {
-                    "displayName": "Transparency",
-                    "type": {
-                        "numeric": true
-                    }
-                },
-                "lineStyle": {
-                    "displayName": "Line style",
-                    "displayNameKey": "Visual_Axis_LineStyle",
-                    "type": {
-                        "enumeration": [
-                            {
-                                "displayName": "Dashed",
-                                "description": "Dashed",
-                                "value": "dashed"
-                            },
-                            {
-                                "displayName": "Solid",
-                                "description": "Solid",
-                                "value": "solid"
-                            },
-                            {
-                                "displayName": "Dotted",
-                                "description": "Dotted",
-                                "value": "dotted"
-                            }
-                        ]
-                    }
-                },
-                "position": {
-                    "displayName": "Position",
-                    "type": {
-                        "enumeration": [
-                            {
-                                "displayName": "Behind",
-                                "description": "Behind",
-                                "value": "behind"
-                            },
-                            {
-                                "displayName": "In front",
-                                "description": "In front",
-                                "value": "front"
-                            }
-                        ]
-                    }
-                },
-                "dataLabelShow": {
-                    "displayName": "Data label",
-                    "type": {
-                        "bool": true
-                    }
-                },
-                "fontColor": {
-                    "displayName": "Color",
-                    "type": {
-                        "fill": {
-                            "solid": {
-                                "color": true
-                            }
-                        }
-                    }
-                },
-                "text": {
-                    "displayName": "Text",
-                    "type": {
-                        "enumeration": [
-                            {
-                                "displayName": "Value",
-                                "description": "Value",
-                                "value": "value"
-                            },
-                            {
-                                "displayName": "Name",
-                                "description": "Name",
-                                "value": "name"
-                            },
-                            {
-                                "displayName": "Name and Value",
-                                "description": "Name and Value",
-                                "value": "nameAndValue"
-                            }
-                        ]
-                    }
-                },
-                "horizontalPosition": {
-                    "displayName": "Horizontal Position",
-                    "type": {
-                        "enumeration": [
-                            {
-                                "displayName": "Left",
-                                "description": "Left",
-                                "value": "left"
-                            },
-                            {
-                                "displayName": "Right",
-                                "description": "Right",
-                                "value": "right"
-                            }
-                        ]
-                    }
-                },
-                "verticalPosition": {
-                    "displayName": "Vertical Position",
-                    "type": {
-                        "enumeration": [
-                            {
-                                "displayName": "Top",
-                                "description": "Top",
-                                "value": "top"
-                            },
-                            {
-                                "displayName": "Bottom",
-                                "description": "Bottom",
-                                "value": "bottom"
-                            }
-                        ]
-                    }
-                },
-                "displayUnits": {
-                    "displayName": "Display units",
-                    "type": {
-                        "formatting": {
-                            "labelDisplayUnits": true
-                        }
-                    }
-                },
-                "precision": {
-                    "displayName": "Decimal Places",
-                    "placeHolderText": "Auto",
-                    "type": {
-                        "numeric": true
-                    }
-                }
-            }
         }
     },
     "dataViewMappings": [
@@ -1725,12 +1541,6 @@
                         "max": 1
                     },
                     "Value": {
-                        "max": 1
-                    },
-                    "Gradient": {
-                        "max": 0
-                    },
-                    "ColumnBy": {
                         "max": 1
                     },
                     "RowBy": {
@@ -1751,11 +1561,6 @@
                         },
                         {
                             "for": {
-                                "in": "ColumnBy"
-                            }
-                        },
-                        {
-                            "for": {
                                 "in": "RowBy"
                             }
                         }
@@ -1768,6 +1573,11 @@
                             {
                                 "bind": {
                                     "to": "Value"
+                                }
+                            },
+                            {
+                                "for": {
+                                    "in": "Score"
                                 }
                             },
                             {
@@ -1792,12 +1602,6 @@
                     "Value": {
                         "min": 2
                     },
-                    "Gradient": {
-                        "max": 0
-                    },                    
-                    "ColumnBy": {
-                        "max": 1
-                    },
                     "RowBy": {
                         "max": 1
                     },
@@ -1816,11 +1620,6 @@
                         },
                         {
                             "for": {
-                                "in": "ColumnBy"
-                            }
-                        },
-                        {
-                            "for": {
                                 "in": "RowBy"
                             }
                         }
@@ -1831,6 +1630,11 @@
                         {
                             "for": {
                                 "in": "Value"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "Score"
                             }
                         },
                         {
@@ -1855,12 +1659,6 @@
                         "min": 0,
                         "max": 1
                     },
-                    "Gradient": {
-                        "max": 1
-                    },                    
-                    "ColumnBy": {
-                        "max": 1
-                    },
                     "RowBy": {
                         "max": 1
                     },
@@ -1879,11 +1677,6 @@
                         },
                         {
                             "for": {
-                                "in": "ColumnBy"
-                            }
-                        },
-                        {
-                            "for": {
                                 "in": "RowBy"
                             }
                         }
@@ -1898,12 +1691,12 @@
                         },
                         {
                             "for": {
-                                "in": "Tooltips"
+                                "in": "Score"
                             }
                         },
                         {
                             "for": {
-                                "in": "Gradient"
+                                "in": "Tooltips"
                             }
                         }
                     ]
