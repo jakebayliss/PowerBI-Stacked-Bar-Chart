@@ -709,7 +709,7 @@ module powerbi.extensibility.visual {
                             y1: d => d.barCoordinates.y,
                             y2: d => d.barCoordinates.y + d.barCoordinates.height,
                         })
-                        .style('stroke', this.settings.scores.color)
+                        .style('stroke', d => d.scoreColor)
                         .style('stroke-width', this.settings.scores.width);
 
                     
@@ -1467,7 +1467,7 @@ module powerbi.extensibility.visual {
                 return null;
             }
 
-            EnumerateObject.setInstances(this.settings, instanceEnumeration, this.data.axes.yIsScalar, this.data);
+            EnumerateObject.setInstances(this.settings, instanceEnumeration, this.data.axes.yIsScalar, this.data, this.dataView);
 
             return instanceEnumeration;
         }

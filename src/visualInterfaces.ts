@@ -69,7 +69,8 @@ module powerbi.extensibility.visual {
         rowBy?: PrimitiveValue;         
         preSelected?: boolean;
         preRemoved?: boolean;
-        score?: number;
+        score?: number,
+        scoreColor?: string
     }
 
     export interface Coordinates {

@@ -215,7 +215,9 @@ module powerbi.extensibility.visual {
     public backgroundColor: string = "";
   }
   export class scoreSettings {
-    public color: string = "#111";
+    public field1Color: string = "#111";
+    public field2Color: string = "#111";
+    public field3Color: string = "#111";
     public width: number = 1;
   }
   export class smallMultipleSettings {

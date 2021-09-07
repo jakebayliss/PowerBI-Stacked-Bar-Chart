@@ -47,13 +47,10 @@ module powerbi.extensibility.visual {
         public static Convert(dataView: DataView, hostService: IVisualHost, settings: VisualSettings, legendColors: Array<string>): VisualDataPoint[] {
 
             if (this.IsAxisAndLegendSameField(dataView)) {
-                console.log('GetDataPointsForSameAxisAndLegend');
                 return this.GetDataPointsForSameAxisAndLegend(dataView, hostService, legendColors);
             } else if (this.IsLegendFilled(dataView)) {
-                console.log('GetDataPointsForLegend');
                 return this.GetDataPointsForLegend(dataView, hostService, legendColors);
             } else if (this.IsMultipleValues(dataView)) {
-                console.log('GetDataPointsForMultipleValues');
                 return this.GetDataPointsForMultipleValues(dataView, hostService, legendColors);
             }
 
@@ -221,7 +218,20 @@ module powerbi.extensibility.visual {
             let categoryColumn: DataViewCategoryColumn = columns[Field.Axis][0],
             seriesColumn: DataViewValueColumns = columns[Field.GroupedValues],
             groupedValues: DataViewValueColumnGroup[] = seriesColumn.grouped ? seriesColumn.grouped() : null;
-            
+
+            let scoreFields = [...new Set(dataView.metadata.columns.filter(x => x.roles['Score']).map(x => x.displayName))];
+
+            let scores = scoreFields.map((s, i) => {
+                let scoreOptions = dataView.metadata.objects['scores'];
+                let scoreColor = '#111';
+                if(scoreOptions[`field${i+1}Color`] && (scoreOptions[`field${i+1}Color`] as powerbi.Fill).solid.color != '#000000') {
+                    scoreColor = (scoreOptions[`field${i+1}Color`] as powerbi.Fill).solid.color;
+                }
+                return {
+                    scoreName: s, color: scoreColor
+                }
+            });
+
             categoryColumn.values.forEach((categoryValue, i) => {
                 let sum: number = 0;
                 let negativeSum: number = 0;
@@ -233,6 +243,7 @@ module powerbi.extensibility.visual {
                     let value: number = columns[Field.Value][k].values[i];
                     let color = legendColors[k];
                     let score: number = columns[Field.Score][k].values[i];
+                    let scoreColor = scores.filter(s => s.scoreName == columns[Field.Score][k].source.displayName)[0].color;
 
                     let identity: ISelectionId = hostService.createSelectionIdBuilder()
                         .withCategory(categoryColumn, i)
@@ -266,6 +277,7 @@ module powerbi.extensibility.visual {
                             value: value,
                             valueForWidth: value >= 0 ? value : -value,
                             score: score,
+                            scoreColor: scoreColor,
                             shiftValue: value >= 0 ? sum : negativeSum + value,
                             sum: value >= 0 ? sum + value : negativeSum + value,
                             selected: false,

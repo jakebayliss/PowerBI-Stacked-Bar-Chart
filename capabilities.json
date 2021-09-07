@@ -268,8 +268,28 @@
         "scores": {
             "displayName": "Score Lines",
             "properties": {
-                "color": {
-                    "displayName": "Color",
+                "field1Color": {
+                    "displayName": "Field 1 Color",
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                },
+                "field2Color": {
+                    "displayName": "Field 2 Color",
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                },
+                "field3Color": {
+                    "displayName": "Field 3 Color",
                     "type": {
                         "fill": {
                             "solid": {

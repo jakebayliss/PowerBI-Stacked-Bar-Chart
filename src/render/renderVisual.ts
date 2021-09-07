@@ -103,7 +103,7 @@ module powerbi.extensibility.visual {
                     y1: d => d.barCoordinates.y,
                     y2: d => d.barCoordinates.y + d.barCoordinates.height
                 })
-                .style('stroke', settings.scores.color)
+                .style('stroke', d => d.scoreColor)
                 .style('stroke-width', settings.scores.width);
 
             let interactivityService = visualInteractivityService,
