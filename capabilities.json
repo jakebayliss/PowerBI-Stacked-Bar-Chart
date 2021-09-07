@@ -265,6 +265,27 @@
                 }
             }
         },
+        "scores": {
+            "displayName": "Score Lines",
+            "properties": {
+                "color": {
+                    "displayName": "Color",
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                },
+                "width": {
+                    "displayName": "Width",
+                    "type": {
+                        "numeric": true
+                    }
+                }
+            }
+        },
         "legend": {
             "displayName": "Legend",
             "displayNameKey": "Visual_Legend",
@@ -1576,8 +1597,8 @@
                                 }
                             },
                             {
-                                "for": {
-                                    "in": "Score"
+                                "bind": {
+                                    "to": "Score"
                                 }
                             },
                             {

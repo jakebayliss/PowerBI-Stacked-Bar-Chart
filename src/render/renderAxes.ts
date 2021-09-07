@@ -388,13 +388,6 @@ module powerbi.extensibility.visual {
             let dataDomainMinX: number = minValue;
             let dataDomainMaxX: number = maxValue;
 
-            let constantLineValue: number = settings.constantLine.value;
-
-            if (constantLineValue || constantLineValue === 0) {
-                dataDomainMinX = dataDomainMinX > constantLineValue ? constantLineValue : dataDomainMinX;
-                dataDomainMaxX = dataDomainMaxX < constantLineValue ? constantLineValue : dataDomainMaxX;
-            }
-
             const skipStartEnd: boolean = isSmallMultiple && settings.valueAxis.rangeType !== AxisRangeType.Custom;
 
             let start = skipStartEnd ? null : settings.valueAxis.start;

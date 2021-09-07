@@ -36,11 +36,11 @@ module powerbi.extensibility.visual {
     };
     public dataPoint: dataPointSettings = new dataPointSettings();
     public smallMultiple: smallMultipleSettings = new smallMultipleSettings();
+    public scores: scoreSettings = new scoreSettings();
     public legend: legendSettings = new legendSettings();
     public categoryAxis: categoryAxisSettings = new categoryAxisSettings();
     public valueAxis: valueAxisSettings = new valueAxisSettings();
     public categoryLabels: categoryLabelsSettings = new categoryLabelsSettings();
-    public constantLine: constantLineSettings = new constantLineSettings();
   }
 
   export enum AxisRangeType {
@@ -214,21 +214,9 @@ module powerbi.extensibility.visual {
     // Show Background transparency
     public backgroundColor: string = "";
   }
-  export class constantLineSettings {
-    public show: boolean = false;
-    public name: string = "";
-    public value: number = 0;
-    public lineColor: string = "#01b8aa";
-    public transparency: number = 90;
-    public lineStyle: LineStyle = LineStyle.Dotted;
-    public position: Position = Position.Behind;
-    public dataLabelShow: boolean = false;    
-    public fontColor: string = "#01b8aa";
-    public text: Text = Text.Name;
-    public horizontalPosition: HorizontalPosition = HorizontalPosition.Left;
-    public verticalPosition: VerticalPosition = VerticalPosition.Top;
-    public displayUnits: number = 0;
-    public precision: number = null;
+  export class scoreSettings {
+    public color: string = "#111";
+    public width: number = 1;
   }
   export class smallMultipleSettings {
     public layoutMode: LayoutMode = LayoutMode.Flow;

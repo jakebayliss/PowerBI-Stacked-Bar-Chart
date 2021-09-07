@@ -160,18 +160,6 @@ module powerbi.extensibility.visual {
 
                     break;
                 }
-                case "constantLine": {
-                    if (!settings.constantLine.dataLabelShow) {
-                        delete instance.properties["fontColor"];
-                        delete instance.properties["text"];
-                        delete instance.properties["horizontalPosition"];
-                        delete instance.properties["verticalPosition"];
-                        delete instance.properties["displayUnits"];
-                        delete instance.properties["precision"];
-                    }
-
-                    break;
-                }
                 case "smallMultiple": {
                     if (settings.smallMultiple.layoutMode === LayoutMode.Matrix) {
                         delete instance.properties["maxRowWidth"];

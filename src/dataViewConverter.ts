@@ -33,6 +33,7 @@ module powerbi.extensibility.visual {
         Axis = <any>"Axis",
         Legend = <any>"Legend",
         Value = <any>"Value",
+        Score = <any>"Score",
         Gradient = <any>"Gradient",
         ColumnBy = <any>"ColumnBy",
         RowBy = <any>"RowBy",
@@ -46,10 +47,13 @@ module powerbi.extensibility.visual {
         public static Convert(dataView: DataView, hostService: IVisualHost, settings: VisualSettings, legendColors: Array<string>): VisualDataPoint[] {
 
             if (this.IsAxisAndLegendSameField(dataView)) {
+                console.log('GetDataPointsForSameAxisAndLegend');
                 return this.GetDataPointsForSameAxisAndLegend(dataView, hostService, legendColors);
             } else if (this.IsLegendFilled(dataView)) {
+                console.log('GetDataPointsForLegend');
                 return this.GetDataPointsForLegend(dataView, hostService, legendColors);
             } else if (this.IsMultipleValues(dataView)) {
+                console.log('GetDataPointsForMultipleValues');
                 return this.GetDataPointsForMultipleValues(dataView, hostService, legendColors);
             }
 
@@ -141,14 +145,17 @@ module powerbi.extensibility.visual {
             columns[Field.Legend].forEach((legend, k) => {
                 let value: number = columns[Field.Value][k].values[0];
                 let color = legendColors[k];
+                let score: number = columns[Field.Score][k].values[0];
 
                 let tooltipItems: VisualTooltipDataItem[] = [];
 
                 const groupMetadata: DataViewMetadataColumn = columns[Field.GroupedValues].source,
-                    valueMetadata: DataViewMetadataColumn = columns[Field.Value][k].source;
+                    valueMetadata: DataViewMetadataColumn = columns[Field.Value][k].source,
+                    scoreMetadata: DataViewMetadataColumn = columns[Field.Score][k].source;
 
                 tooltipItems.push(this.createTooltipData(groupMetadata, legend));
                 tooltipItems.push(this.createTooltipData(valueMetadata, value));
+                tooltipItems.push(this.createTooltipData(scoreMetadata, score));
 
                 if (columns[Field.Tooltips] && columns[Field.Tooltips].length) {
                     columns[Field.Tooltips].filter(x => x.source.groupName === legend).forEach(tooltipColumn => {
@@ -170,6 +177,7 @@ module powerbi.extensibility.visual {
                         series: legend,
                         valueForWidth: value >= 0 ? value : -value,
                         value: value,
+                        score: score,
                         shiftValue: value < 0 ? value : 0,
                         sum: value,
                         selected: false,
@@ -209,21 +217,22 @@ module powerbi.extensibility.visual {
             let columns: VisualColumns = this.GetGroupedValueColumns(dataView);
 
             let data: VisualDataPoint[] = [];
-
+            
             let categoryColumn: DataViewCategoryColumn = columns[Field.Axis][0],
-                seriesColumn: DataViewValueColumns = columns[Field.GroupedValues],
-                groupedValues: DataViewValueColumnGroup[] = seriesColumn.grouped ? seriesColumn.grouped() : null;
-
+            seriesColumn: DataViewValueColumns = columns[Field.GroupedValues],
+            groupedValues: DataViewValueColumnGroup[] = seriesColumn.grouped ? seriesColumn.grouped() : null;
+            
             categoryColumn.values.forEach((categoryValue, i) => {
                 let sum: number = 0;
                 let negativeSum: number = 0;
-
+                
                 let columnBy: PrimitiveValue = columns[Field.ColumnBy] && columns[Field.ColumnBy][0].values[i],
-                    rowBy: PrimitiveValue = columns[Field.RowBy] && columns[Field.RowBy][0].values[i];
-
+                rowBy: PrimitiveValue = columns[Field.RowBy] && columns[Field.RowBy][0].values[i];
+                
                 columns[Field.Legend].forEach((legend, k) => {
                     let value: number = columns[Field.Value][k].values[i];
                     let color = legendColors[k];
+                    let score: number = columns[Field.Score][k].values[i];
 
                     let identity: ISelectionId = hostService.createSelectionIdBuilder()
                         .withCategory(categoryColumn, i)
@@ -256,6 +265,7 @@ module powerbi.extensibility.visual {
                             series: legend,
                             value: value,
                             valueForWidth: value >= 0 ? value : -value,
+                            score: score,
                             shiftValue: value >= 0 ? sum : negativeSum + value,
                             sum: value >= 0 ? sum + value : negativeSum + value,
                             selected: false,

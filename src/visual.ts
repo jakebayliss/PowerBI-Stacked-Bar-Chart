@@ -692,6 +692,26 @@ module powerbi.extensibility.visual {
                             fill: d => d.color
                         });
 
+                    const barScore = barGroup
+                        .selectAll('.score-line')
+                        .data(dataPoints);
+        
+                    barScore.enter().append("line")
+                        .attr("class", 'score-line');
+        
+                    barScore.exit()
+                        .remove();
+        
+                    barScore
+                        .attr({
+                            x1: d => axes.x.scale(d.score),
+                            x2: d => axes.x.scale(d.score),
+                            y1: d => d.barCoordinates.y,
+                            y2: d => d.barCoordinates.y + d.barCoordinates.height,
+                        })
+                        .style('stroke', this.settings.scores.color)
+                        .style('stroke-width', this.settings.scores.width);
+
                     
                     barSelect.style({
                         "fill-opacity": (p: VisualDataPoint) => visualUtils.getFillOpacity(
@@ -768,11 +788,6 @@ module powerbi.extensibility.visual {
                             xAxisLabelSize: xAxisSize
                         }, this.settings.smallMultiple);
                     }
-
-                    let yHeight: number = (<Element>xAxisSvgGroup.selectAll("line").node()).getBoundingClientRect().height;
-                    if (axes.x.dataDomain[0] < this.settings.constantLine.value && this.settings.constantLine.value < axes.x.dataDomain[1]) {
-                        RenderVisual.renderConstantLine(this.settings.constantLine, barGroup, axes, yHeight);
-                    }                    
                 }
             }
 
@@ -895,11 +910,6 @@ module powerbi.extensibility.visual {
             let bars = this.barGroup.selectAll(Selectors.BarSelect.selectorName).data(visibleDataPoints);
             this.LassoSelectionForSmallMultiple.disable();
             this.lassoSelection.update(bars);
-
-            if ( this.settings.constantLine.show && this.settings.constantLine.value ){
-                let yHeight: number = (<Element>this.xAxisSvgGroup.selectAll("line").node()).getBoundingClientRect().height;
-                RenderVisual.renderConstantLine(this.settings.constantLine, this.barGroup, axes, yHeight);
-            }
         }
 
         public update(options: VisualUpdateOptions) {
@@ -926,7 +936,7 @@ module powerbi.extensibility.visual {
 
             this.legendProperties = legendUtils.setLegendProperties(dataView, this.host, this.settings.legend);
 
-            this.allDataPoints = DataViewConverter.Convert(dataView, this.host, this.settings, this.legendProperties.colors);    
+            this.allDataPoints = DataViewConverter.Convert(dataView, this.host, this.settings, this.legendProperties.colors);
 
             if ( this.isSmallMultiple() ) {
                 this.smallMultipleProcess(options.viewport);

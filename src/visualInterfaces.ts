@@ -37,6 +37,7 @@ module powerbi.extensibility.visual {
         public Axis: DataViewValueColumn = null;
         public Legend: DataViewValueColumn = null;
         public Value: DataViewValueColumn[] | DataViewValueColumn = null;
+        public Score: DataViewValueColumn[] | DataViewValueColumn = null;
         public ColorSaturation: DataViewValueColumn = null;
         public Tooltips: DataViewValueColumn[] | DataViewValueColumn = null;
         public ColumnBy: DataViewValueColumn = null;
@@ -68,6 +69,7 @@ module powerbi.extensibility.visual {
         rowBy?: PrimitiveValue;         
         preSelected?: boolean;
         preRemoved?: boolean;
+        score?: number;
     }
 
     export interface Coordinates {

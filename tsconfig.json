@@ -3,7 +3,10 @@
     "allowJs": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "ES5",
+    "target": "es6",
+    "lib": [
+      "ES6","DOM"
+    ],
     "sourceMap": true,
     "out": "./.tmp/build/visual.js"
   },
