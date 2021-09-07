@@ -34,6 +34,7 @@ module powerbi.extensibility.visual {
         Legend = <any>"Legend",
         Value = <any>"Value",
         Score = <any>"Score",
+        Range = <any>"Range",
         Gradient = <any>"Gradient",
         ColumnBy = <any>"ColumnBy",
         RowBy = <any>"RowBy",
@@ -214,23 +215,11 @@ module powerbi.extensibility.visual {
             let columns: VisualColumns = this.GetGroupedValueColumns(dataView);
 
             let data: VisualDataPoint[] = [];
+
             
             let categoryColumn: DataViewCategoryColumn = columns[Field.Axis][0],
             seriesColumn: DataViewValueColumns = columns[Field.GroupedValues],
             groupedValues: DataViewValueColumnGroup[] = seriesColumn.grouped ? seriesColumn.grouped() : null;
-
-            let scoreFields = [...new Set(dataView.metadata.columns.filter(x => x.roles['Score']).map(x => x.displayName))];
-
-            let scores = scoreFields.map((s, i) => {
-                let scoreOptions = dataView.metadata.objects['scores'];
-                let scoreColor = '#111';
-                if(scoreOptions[`field${i+1}Color`] && (scoreOptions[`field${i+1}Color`] as powerbi.Fill).solid.color != '#000000') {
-                    scoreColor = (scoreOptions[`field${i+1}Color`] as powerbi.Fill).solid.color;
-                }
-                return {
-                    scoreName: s, color: scoreColor
-                }
-            });
 
             categoryColumn.values.forEach((categoryValue, i) => {
                 let sum: number = 0;
@@ -243,7 +232,11 @@ module powerbi.extensibility.visual {
                     let value: number = columns[Field.Value][k].values[i];
                     let color = legendColors[k];
                     let score: number = columns[Field.Score][k].values[i];
-                    let scoreColor = scores.filter(s => s.scoreName == columns[Field.Score][k].source.displayName)[0].color;
+                    const ranges: string[] = [...new Set(dataView.metadata.columns.filter(x => x.roles['Range']).map(x => x.displayName))];
+                    let range: number[] = [];
+                    if(ranges.length > 1) {
+                        range = [columns[Field.Range][k].values[i], columns[Field.Range][k + 1].values[i]];
+                    }
 
                     let identity: ISelectionId = hostService.createSelectionIdBuilder()
                         .withCategory(categoryColumn, i)
@@ -277,7 +270,7 @@ module powerbi.extensibility.visual {
                             value: value,
                             valueForWidth: value >= 0 ? value : -value,
                             score: score,
-                            scoreColor: scoreColor,
+                            range: range,
                             shiftValue: value >= 0 ? sum : negativeSum + value,
                             sum: value >= 0 ? sum + value : negativeSum + value,
                             selected: false,

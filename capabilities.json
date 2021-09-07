@@ -37,6 +37,19 @@
             ]
         },
         {
+            "displayName": "Range",
+            "name": "Range",
+            "kind": "Measure",
+            "requiredTypes": [
+                {
+                    "numeric": true
+                },
+                {
+                    "integer": true
+                }
+            ]
+        },
+        {
             "displayName": "Row By",
             "name": "RowBy",
             "kind": "Grouping"
@@ -268,8 +281,8 @@
         "scores": {
             "displayName": "Score Lines",
             "properties": {
-                "field1Color": {
-                    "displayName": "Field 1 Color",
+                "scoreColor": {
+                    "displayName": "Score Color",
                     "type": {
                         "fill": {
                             "solid": {
@@ -278,18 +291,8 @@
                         }
                     }
                 },
-                "field2Color": {
-                    "displayName": "Field 2 Color",
-                    "type": {
-                        "fill": {
-                            "solid": {
-                                "color": true
-                            }
-                        }
-                    }
-                },
-                "field3Color": {
-                    "displayName": "Field 3 Color",
+                "rangeColor": {
+                    "displayName": "Range Color",
                     "type": {
                         "fill": {
                             "solid": {
@@ -1584,6 +1587,9 @@
                     "Value": {
                         "max": 1
                     },
+                    "Score": {
+                        "max": 1
+                    },
                     "RowBy": {
                         "max": 1
                     },
@@ -1622,6 +1628,11 @@
                                 }
                             },
                             {
+                                "bind": {
+                                    "to": "Range"
+                                }
+                            },
+                            {
                                 "for": {
                                     "in": "Tooltips"
                                 }
@@ -1642,6 +1653,9 @@
                     },
                     "Value": {
                         "min": 2
+                    },
+                    "Score": {
+                        "max": 1
                     },
                     "RowBy": {
                         "max": 1
@@ -1676,6 +1690,11 @@
                         {
                             "for": {
                                 "in": "Score"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "Range"
                             }
                         },
                         {
@@ -1700,6 +1719,9 @@
                         "min": 0,
                         "max": 1
                     },
+                    "Score": {
+                        "max": 1
+                    },
                     "RowBy": {
                         "max": 1
                     },
@@ -1733,6 +1755,11 @@
                         {
                             "for": {
                                 "in": "Score"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "Range"
                             }
                         },
                         {

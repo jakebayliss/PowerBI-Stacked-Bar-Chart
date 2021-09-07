@@ -692,6 +692,26 @@ module powerbi.extensibility.visual {
                             fill: d => d.color
                         });
 
+                    const range = barGroup
+                        .selectAll('.range-line')
+                        .data(dataPoints);
+        
+                    range.enter().append("line")
+                        .attr("class", 'range-line');
+        
+                    range.exit()
+                        .remove();
+        
+                    range
+                        .attr({
+                            x1: d => axes.x.scale(d.range[0]),
+                            x2: d => axes.x.scale(d.range[1]),
+                            y1: d => d.barCoordinates.y + (d.barCoordinates.height / 2),
+                            y2: d => d.barCoordinates.y + (d.barCoordinates.height / 2)
+                        })
+                        .style('stroke', this.settings.scores.rangeColor)
+                        .style('stroke-width', this.settings.scores.width);
+
                     const barScore = barGroup
                         .selectAll('.score-line')
                         .data(dataPoints);
@@ -709,9 +729,8 @@ module powerbi.extensibility.visual {
                             y1: d => d.barCoordinates.y,
                             y2: d => d.barCoordinates.y + d.barCoordinates.height,
                         })
-                        .style('stroke', d => d.scoreColor)
+                        .style('stroke', this.settings.scores.scoreColor)
                         .style('stroke-width', this.settings.scores.width);
-
                     
                     barSelect.style({
                         "fill-opacity": (p: VisualDataPoint) => visualUtils.getFillOpacity(

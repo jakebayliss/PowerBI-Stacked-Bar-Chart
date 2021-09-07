@@ -52,30 +52,6 @@ module powerbi.extensibility.visual {
             }
         }
 
-        private static fillScoreInstances(instances: VisualObjectInstance[], dataView: DataView) {
-            const columns: string[] = [...new Set(dataView.metadata.columns.filter(x => x.roles['Score']).map(x => x.displayName))];
-            for (let i = 0; i < columns.length; i++) {
-                instances.push({
-                    objectName: 'scores',
-                    displayName: `Field ${i+1} Color`,
-                    properties: {
-                        [`field${i+1}Color`]: this.getValue<powerbi.Fill>(dataView.metadata.objects, 'scores', `field${i+1}Color`, { solid: { color: "#111" } })
-                    },
-                    selector: null
-                });
-            }
-
-            instances.push({
-                objectName: 'scores',
-                displayName: `Width`,
-                properties: {
-                    width: this.getValue<number>(dataView.metadata.objects, 'scores', `width`, 1)
-                },
-                selector: null
-            });
-
-        }
-
         public static setInstances(
             settings: VisualSettings,
             instanceEnumeration: any,
@@ -107,11 +83,6 @@ module powerbi.extensibility.visual {
                         this.fillDataPointInstancesForNoLegend(visualData, instances);
                     }
 
-                    break;
-                }
-                case "scores": {
-                    instances = [];
-                    this.fillScoreInstances(instances, dataView);
                     break;
                 }
                 case "categoryLabels": {
